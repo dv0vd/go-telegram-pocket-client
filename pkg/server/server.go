@@ -30,7 +30,7 @@ func NewAuthorizationServer(
 
 func (s *AuthorizationServer) Start() error {
 	s.server = &http.Server{
-		Addr:    ":8080",
+		Addr:    ":80",
 		Handler: s,
 	}
 
@@ -38,7 +38,6 @@ func (s *AuthorizationServer) Start() error {
 }
 
 func (s *AuthorizationServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Println("----------------")
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 
@@ -51,7 +50,7 @@ func (s *AuthorizationServer) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 		return
 	}
-	log.Println(chatIDParam)
+
 	chatID, err := strconv.ParseInt(chatIDParam, 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

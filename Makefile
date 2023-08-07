@@ -5,3 +5,9 @@ build:
 
 run: build
 	./build/bot
+
+build-image: 
+	docker build -t telegram-bot . --no-cache
+
+start-container: 
+	docker run --name telegram-bot -p 80:80 --env-file .env -t telegram-bot 
