@@ -19,30 +19,28 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println(cfg)
-
-	bot, err := tgbotapi.NewBotAPI("")
+	bot, err := tgbotapi.NewBotAPI(cfg.TelegramToken)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	bot.Debug = true
 
-	pocketClient, err := pocket.NewClient("")
+	pocketClient, err := pocket.NewClient(cfg.PocketConsumerKey)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db, err := initDB()
+	db, err := initDB(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	tokenRepository := boltdb.NewTokenRepository(db)
 
-	telegramBot := telegram.NewBot(bot, pocketClient, tokenRepository, "")
+	telegramBot := telegram.NewBot(bot, pocketClient, tokenRepository, cfg.AuthServerURL, cfg.Messages)
 
-	authorizationServer := server.NewAuthorizationServer(pocketClient, tokenRepository, "")
+	authorizationServer := server.NewAuthorizationServer(pocketClient, tokenRepository, cfg.TelegramBotURL)
 
 	go func() {
 		if err := telegramBot.Start(); err != nil {
@@ -55,8 +53,8 @@ func main() {
 	}
 }
 
-func initDB() (*bolt.DB, error) {
-	db, err := bolt.Open("", 0600, nil)
+func initDB(cfg *config.Config) (*bolt.DB, error) {
+	db, err := bolt.Open(cfg.DBPath, 0600, nil)
 	if err != nil {
 		return nil, err
 	}
