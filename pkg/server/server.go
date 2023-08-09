@@ -30,7 +30,7 @@ func NewAuthorizationServer(
 
 func (s *AuthorizationServer) Start() error {
 	s.server = &http.Server{
-		Addr:    ":80",
+		Addr:    ":33333",
 		Handler: s,
 	}
 
@@ -79,6 +79,7 @@ func (s *AuthorizationServer) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	log.Println("--------------------------------------------------------------")
 	log.Printf("chat_id: %d\nrequest_token: %s\naccess_token: %s\n", chatID, requestToken, authResp.AccessToken)
 
 	w.Header().Add("Location", s.redirectURL)
