@@ -1,6 +1,10 @@
 package config
 
 import (
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -63,21 +67,13 @@ func Init() (*Config, error) {
 }
 
 func parseEnv(cfg *Config) error {
-	if err := viper.BindEnv("token"); err != nil {
-		return err
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("error loading env variables: %s", err.Error())
 	}
 
-	if err := viper.BindEnv("consumer_key"); err != nil {
-		return err
-	}
-
-	if err := viper.BindEnv("auth_server_url"); err != nil {
-		return err
-	}
-
-	cfg.TelegramToken = viper.GetString("token")
-	cfg.PocketConsumerKey = viper.GetString("consumer_key")
-	cfg.AuthServerURL = viper.GetString("auth_server_url")
+	cfg.TelegramToken = os.Getenv("TOKEN")
+	cfg.PocketConsumerKey = os.Getenv("CONSUMER_KEY")
+	cfg.AuthServerURL = os.Getenv("AUTH_SERVER_URL")
 
 	return nil
 }
